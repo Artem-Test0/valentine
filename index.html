@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вибухаюче сердечко</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e97c7c;
+            color: rgb(255, 0, 0);
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .heart-char {
+            position: absolute;
+            font-family: monospace;
+            transition: transform 1s ease-out, opacity 1s ease-out;
+            opacity: 0;
+        }
+        .love-text {
+            position: absolute;
+            font-size: 50px;
+            font-weight: bold;
+            color: white;
+            opacity: 0;
+            transition: opacity 2s ease-in;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const heartPattern = [
+            "    ❤️❤️      ❤️❤️  ",
+            "  ❤️❤️❤️❤️  ❤️❤️❤️❤️",
+            "  ❤️❤️❤️❤️❤️❤️❤️❤️❤️",
+            "❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",
+            "❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",
+            "❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",
+            "❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",
+            "❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",
+            "  ❤️❤️❤️❤️❤️❤️❤️❤️❤️",
+            "  ❤️❤️❤️❤️❤️❤️❤️❤️❤️",
+            "    ❤️❤️❤️❤️❤️❤️❤️",
+            "    ❤️❤️❤️❤️❤️❤️❤️",
+            "      ❤️❤️❤️❤️❤️",
+            "        ❤️❤️❤️",
+            "          ❤️"
+        ];
+        
+        let container = document.body;
+        let elements = [];
+        let row = 0, col = 0;
+
+        function drawHeart() {
+            if (row < heartPattern.length) {
+                let currentRow = heartPattern[row];
+                if (col < currentRow.length) {
+                    let span = document.createElement("span");
+                    span.textContent = currentRow[col];
+                    span.classList.add("heart-char");
+                    
+                    let x = col * 15 + window.innerWidth / 2 - heartPattern[0].length * 7.5;
+                    let y = row * 18 + window.innerHeight / 3;
+                    span.style.left = `${x}px`;
+                    span.style.top = `${y}px`;
+                    
+                    container.appendChild(span);
+                    elements.push(span);
+                    
+                    setTimeout(() => span.style.opacity = 1, 50 * (row * heartPattern[0].length + col));
+                    
+                    col++;
+                    setTimeout(drawHeart, 0.5);
+                } else {
+                    col = 0;
+                    row++;
+                    setTimeout(drawHeart, 0.5);
+                }
+            } else {
+                setTimeout(explodeHeart, 15000);
+            }
+        }
+        
+        function explodeHeart() {
+            elements.forEach(span => {
+                let angle = Math.random() * 2 * Math.PI;
+                let distance = Math.random() * 500 + 100;
+                let x = Math.cos(angle) * distance;
+                let y = Math.sin(angle) * distance;
+                
+                span.style.transform = `translate(${x}px, ${y}px) rotate(${Math.random() * 360}deg)`;
+                span.style.opacity = 0;
+            });
+            setTimeout(() => {
+                elements.forEach(span => span.remove());
+                showLoveText();
+            }, 1500);
+        }
+        
+        function showLoveText() {
+            let loveText = document.createElement("div");
+            loveText.textContent = "I love you❤️";
+            loveText.classList.add("love-text");
+            loveText.style.left = "50%";
+            loveText.style.top = "50%";
+            loveText.style.transform = "translate(-50%, -50%)";
+            container.appendChild(loveText);
+            
+            setTimeout(() => loveText.style.opacity = 1, 500);
+        }
+        
+        drawHeart();
+    </script>
+</body>
+</html>
